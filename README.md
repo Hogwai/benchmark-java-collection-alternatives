@@ -1,4 +1,5 @@
 # benchmark-java-collection-alternatives
+English version: [README_EN.md](README_en.md)
 ## Sommaire
 
 - [Description](#description)
