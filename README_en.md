@@ -10,6 +10,9 @@
     - [HashSet vs IntOpenHashSet](#hashset-vs-intopenhashset)
     - [ArrayList vs IntArrayList](#arraylist-vs-intarraylist)
     - [HashMap vs Int2IntOpenHashMap](#hashmap-vs-int2intopenhashmap)
+  - [agrona](#agrona)
+    - [ArrayList vs Agrona IntArrayList](#arraylist-vs-agrona-intarraylist)
+    - [HashMap vs Agrona Int2IntHashMap](#hashmap-vs-agrona-int2inthashmap)
 
 ---
 ## Description
@@ -106,3 +109,51 @@ The tables below present the benchmark results comparing `java.util.HashMap<Inte
 ##### Observations
 - **put**: `Int2IntOpenHashMap` is **2.3 to 3.9x faster**, with the maximum gain at 1000 elements.
 - **get**: Mixed results; `HashMap` is faster for 100 elements (~1.47x), but `Int2IntOpenHashMap` becomes **up to 2.7x faster** at 100,000 elements.
+
+### agrona
+#### ArrayList vs Agrona IntArrayList
+
+The tables below present the benchmark results comparing `java.util.ArrayList<Integer>` and `org.agrona.collections.IntArrayList` for the `add` and `get` operations.
+
+##### Operation `add`
+| Size     | java.util.ArrayList (µs/op) | agrona.IntArrayList (µs/op) | Gain (ratio) |
+|----------|-----------------------------|-----------------------------|----------------|
+| 100      | 0.506 ± 0.031               | 0.113 ± 0.010               | ~4.48x         |
+| 1000     | 5.126 ± 0.283               | 1.440 ± 0.332               | ~3.56x         |
+| 10,000   | 57.441 ± 5.968              | 14.603 ± 1.973              | ~3.93x         |
+| 100,000  | 584.322 ± 23.313            | 112.660 ± 5.952             | ~5.19x         |
+
+##### Operation `get`
+| Size     | java.util.ArrayList (µs/op) | agrona.IntArrayList (µs/op) | Gain (ratio) |
+|----------|-----------------------------|-----------------------------|----------------|
+| 100      | 1.259 ± 0.043               | 1.361 ± 0.030               | ~0.93x         |
+| 1000     | 12.540 ± 0.214              | 15.924 ± 2.070              | ~0.79x         |
+| 10,000   | 127.313 ± 3.796             | 143.565 ± 8.570             | ~0.89x         |
+| 100,000  | 1678.622 ± 147.345          | 1812.784 ± 69.776           | ~0.93x         |
+
+##### Observations
+- **add**: `IntArrayList` is **3.56 to 5.19x faster**, with the maximum gain at 100,000 elements.
+- **get**: `ArrayList` is slightly faster (~0.79 to 0.93x), but the differences are small and within the margins of error.
+
+#### HashMap vs Agrona Int2IntHashMap
+The tables below present the benchmark results comparing `java.util.HashMap<Integer, Integer>` and `org.agrona.collections.Int2IntHashMap` for the `put` and `get` operations.
+
+##### Operation `put`
+| Size     | java.util.HashMap (µs/op) | agrona.Int2IntHashMap (µs/op) | Gain (ratio) |
+|----------|---------------------------|-------------------------------|----------------|
+| 100      | 1.888 ± 0.145             | 1.526 ± 0.103                 | ~1.24x         |
+| 1000     | 21.514 ± 2.826            | 16.841 ± 1.456                | ~1.28x         |
+| 10,000   | 192.646 ± 19.421          | 135.527 ± 12.900              | ~1.42x         |
+| 100,000  | 3041.915 ± 1165.324       | 4571.294 ± 516.363            | ~0.67x         |
+
+##### Operation `get`
+| Size     | java.util.HashMap (µs/op) | agrona.Int2IntHashMap (µs/op) | Gain (ratio) |
+|----------|---------------------------|-------------------------------|----------------|
+| 100      | 1.581 ± 0.115             | 2.077 ± 0.070                 | ~0.76x         |
+| 1000     | 20.204 ± 1.313            | 25.864 ± 2.908                | ~0.78x         |
+| 10,000   | 306.371 ± 36.816          | 611.495 ± 869.572             | ~0.50x         |
+| 100,000  | 7610.090 ± 2464.821       | 4157.502 ± 644.385            | ~1.83x         |
+
+##### Observations
+- **put**: `Int2IntHashMap` is **1.24 to 1.42x faster** for sizes 100 to 10,000, but **~1.5x slower** at 100,000 elements, with high variability.
+- **get**: `HashMap` is faster (~1.3-2x) for 100 to 10,000 elements,
