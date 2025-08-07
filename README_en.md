@@ -7,6 +7,7 @@
 - [Running the Benchmarks](#running-the-benchmarks)
 - [Results](#results)
   - [FastUtil](#fastutil)
+    - [HashSet vs IntOpenHashSet](#hashset-vs-intopenhashset)
     - [ArrayList vs IntArrayList](#arraylist-vs-intarraylist)
     - [HashMap vs Int2IntOpenHashMap](#hashmap-vs-int2intopenhashmap)
 

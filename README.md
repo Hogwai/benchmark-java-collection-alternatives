@@ -8,6 +8,7 @@ English version: [README_EN.md](README_en.md)
 - [Exécution des benchmarks](#exécution-des-benchmarks)
 - [Résultats](#résultats)
   - [FastUtil](#fastutil)
+    - [HashSet vs IntOpenHashSet](#hashset-vs-intopenhashset)
     - [ArrayList vs IntArrayList](#arraylist-vs-intarraylist)
     - [HashMap vs Int2IntOpenHashMap](#hashmap-vs-int2intopenhashmap)
 
