@@ -21,7 +21,7 @@ English version: [README_EN.md](README_en.md)
 
 ---
 ## Description
-Ce dépôt contient des benchmarks JMH (Java Microbenchmark Harness) comparant les performances des collections standards de java.util avec leurs équivalents optimisés (fastutil, agrona, eclipse-collections).
+Ce dépôt contient des benchmarks JMH (Java Microbenchmark Harness) comparant les performances des collections standards de java.util avec leurs équivalents optimisés ([fastutil](https://github.com/vigna/fastutil), [agrona](https://github.com/aeron-io/agrona), [eclipse-collections](https://github.com/eclipse-collections/eclipse-collections)).
 
 ## Prérequis
 - Java 21
