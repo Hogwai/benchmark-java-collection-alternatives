@@ -228,6 +228,6 @@ The tables below present the benchmark results comparing `java.util.HashMap<Inte
 | 10,000   | 312,758 ± 58,560          | 148,900 ± 3,901               | ~2.10x         |
 | 100,000  | 7274,169 ± 1086,437       | 2318,541 ± 919,592            | ~3.14x         |
 
-###### Observations
+##### Observations
 - **put**: `IntIntHashMap` is **2.83 to 4.09x faster**, with increasing gains at scale (~4.09x at 100,000).
 - **get**: `IntIntHashMap` is **1.17 to 3.14x faster**, with a significant advantage at 100,000 elements (~3.14x).

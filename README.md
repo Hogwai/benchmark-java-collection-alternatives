@@ -229,6 +229,6 @@ Les tableaux ci-dessous présentent les résultats du benchmark comparant `java.
 | 10 000   | 312,758 ± 58,560          | 148,900 ± 3,901               | ~2,10x         |
 | 100 000  | 7274,169 ± 1086,437       | 2318,541 ± 919,592            | ~3,14x         |
 
-###### Observations
+##### Observations
 - **put** : `IntIntHashMap` est **2,83 à 4,09x plus rapide**, avec un gain croissant à grande échelle (~4,09x à 100 000).
 - **get** : `IntIntHashMap` est **1,17 à 3,14x plus rapide**, avec un avantage marqué à 100 000 éléments (~3,14x).
