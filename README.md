@@ -7,17 +7,21 @@ English version: [README_EN.md](README_en.md)
 - [Installation](#installation)
 - [Exécution des benchmarks](#exécution-des-benchmarks)
 - [Résultats](#résultats)
-  - [FastUtil](#fastutil)
+  - [fastutil](#fastutil)
     - [HashSet vs IntOpenHashSet](#hashset-vs-intopenhashset)
     - [ArrayList vs IntArrayList](#arraylist-vs-intarraylist)
     - [HashMap vs Int2IntOpenHashMap](#hashmap-vs-int2intopenhashmap)
   - [agrona](#agrona)
     - [ArrayList vs Agrona IntArrayList](#arraylist-vs-agrona-intarraylist)
     - [HashMap vs Agrona Int2IntHashMap](#hashmap-vs-agrona-int2inthashmap)
+  - [eclipse-collections](#eclipse-collections)
+    - [HashSet vs Eclipse IntHashSet](#hashset-vs-eclipse-inthashset)
+    - [ArrayList vs Eclipse IntArrayList](#arraylist-vs-eclipse-intarraylist)
+    - [HashMap vs MutableIntIntMap](#hashmap-vs-mutableintintmap)
 
 ---
 ## Description
-Ce dépôt contient des benchmarks JMH (Java Microbenchmark Harness) comparant les performances des collections standards de java.util avec leurs équivalents optimisés (FastUtil, agrona).
+Ce dépôt contient des benchmarks JMH (Java Microbenchmark Harness) comparant les performances des collections standards de java.util avec leurs équivalents optimisés (fastutil, agrona, eclipse-collections).
 
 ## Prérequis
 - Java 21
@@ -39,7 +43,7 @@ Pour lancer les benchmarks directement depuis intellij, il est nécessaire d'ins
 
 ## Résultats
 
-### FastUtil
+### fastutil
 Les temps sont en microsecondes (µs/op), mesurés avec JMH (5 itérations d'échauffement, 5 itérations de mesure, 2 forks).
 
 #### HashSet vs IntOpenHashSet
@@ -158,3 +162,73 @@ Les tableaux ci-dessous présentent les résultats du benchmark comparant `java.
 ##### Observations
 - **put** : `Int2IntHashMap` est **1,24 à 1,42x plus rapide** pour les tailles 100 à 10 000, mais **~1,5x plus lent** à 100 000 éléments, avec une variabilité élevée.
 - **get** : `HashMap` est plus rapide (~1,3-2x) pour 100 à 10 000 éléments, mais `Int2IntHashMap` est **~1,83x plus rapide** à 100 000 éléments.
+
+### eclipse-collections
+#### HashSet vs Eclipse IntHashSet
+Les tableaux ci-dessous présentent les résultats du benchmark comparant `java.util.HashSet<Integer>` et `org.eclipse.collections.impl.set.mutable.primitive.IntHashSet` pour les opérations `add` et `contains`
+
+##### Opération `add`
+| Taille   | java.util.HashSet (µs/op) | Eclipse IntHashSet (µs/op) | Gain (rapport) |
+|----------|---------------------------|----------------------------|----------------|
+| 100      | 1,823 ± 0,190             | 0,494 ± 0,160              | ~3,69x         |
+| 1000     | 23,480 ± 6,174            | 8,385 ± 2,312              | ~2,80x         |
+| 10 000   | 231,990 ± 91,308          | 95,981 ± 4,390             | ~2,42x         |
+| 100 000  | 4253,353 ± 5232,318       | 1605,101 ± 71,214          | ~2,65x         |
+
+##### Opération `contains`
+| Taille   | java.util.HashSet (µs/op) | Eclipse IntHashSet (µs/op) | Gain (rapport) |
+|----------|---------------------------|----------------------------|----------------|
+| 100      | 0,494 ± 0,057             | 0,346 ± 0,167              | ~1,43x         |
+| 1000     | 5,620 ± 0,420             | 8,005 ± 2,673              | ~0,70x         |
+| 10 000   | 66,996 ± 21,513           | 65,854 ± 5,298             | ~1,02x         |
+| 100 000  | 1316,742 ± 230,694        | 1195,077 ± 44,682          | ~1,10x         |
+
+##### Observations
+- **add** : `IntHashSet` est **2,42 à 3,69x plus rapide**, avec un gain maximal à 100 éléments. Les performances restent solides à grande échelle malgré une variabilité élevée pour `HashSet` à 100 000.
+- **contains** : Résultats mitigés ; `IntHashSet` est plus rapide (~1,43x) à 100 éléments, mais plus lent (~0,70x) à 1000. Les performances sont quasi identiques à 10 000 et 100 000 (~1,02-1,10x).
+
+#### ArrayList vs Eclipse IntArrayList
+Les tableaux ci-dessous présentent les résultats du benchmark comparant `java.util.ArrayList<Integer>` et `org.eclipse.collections.impl.list.mutable.primitive.IntArrayList` pour les opérations `add` et `get`.
+
+##### Opération `add`
+| Taille   | java.util.ArrayList (µs/op) | Eclipse IntArrayList (µs/op) | Gain (rapport) |
+|----------|-----------------------------|------------------------------|----------------|
+| 100      | 0,501 ± 0,030               | 0,121 ± 0,012                | ~4,14x         |
+| 1000     | 5,288 ± 0,448               | 1,325 ± 0,102                | ~3,99x         |
+| 10 000   | 57,737 ± 4,016              | 14,139 ± 0,655               | ~4,08x         |
+| 100 000  | 587,736 ± 65,289            | 181,133 ± 155,147            | ~3,24x         |
+
+##### Opération `get`
+| Taille   | java.util.ArrayList (µs/op) | Eclipse IntArrayList (µs/op) | Gain (rapport) |
+|----------|-----------------------------|------------------------------|----------------|
+| 100      | 1,326 ± 0,057               | 1,356 ± 0,116                | ~0,98x         |
+| 1000     | 12,806 ± 0,305              | 13,208 ± 0,600               | ~0,97x         |
+| 10 000   | 136,481 ± 14,400            | 139,395 ± 7,133              | ~0,98x         |
+| 100 000  | 1692,195 ± 40,706           | 2055,078 ± 1042,478          | ~0,82x         |
+
+##### Observations
+- **add** : `IntArrayList` est **3,24 à 4,14x plus rapide**, avec un gain constant pour les petites et moyennes tailles, mais légèrement réduit à 100 000 éléments en raison d'une variabilité élevée.
+- **get** : Les performances sont **quasi identiques** (~0,97-0,98x) pour 100 à 10 000 éléments, avec `ArrayList` légèrement plus rapide (~1,22x) à 100 000.
+
+#### HashMap vs MutableIntIntMap
+Les tableaux ci-dessous présentent les résultats du benchmark comparant `java.util.HashMap<Integer, Integer>` et `org.eclipse.collections.impl.map.mutable.primitive.IntIntHashMap` pour les opérations `put` et `get`.
+
+##### Opération `put`
+| Taille   | java.util.HashMap (µs/op) | Eclipse IntIntHashMap (µs/op) | Gain (rapport) |
+|----------|---------------------------|-------------------------------|----------------|
+| 100      | 2,077 ± 0,319             | 0,626 ± 0,038                 | ~3,32x         |
+| 1000     | 21,543 ± 1,554            | 6,531 ± 0,574                 | ~3,30x         |
+| 10 000   | 185,059 ± 13,089          | 65,336 ± 6,458                | ~2,83x         |
+| 100 000  | 2657,581 ± 198,832        | 649,039 ± 100,905             | ~4,09x         |
+
+##### Opération `get`
+| Taille   | java.util.HashMap (µs/op) | Eclipse IntIntHashMap (µs/op) | Gain (rapport) |
+|----------|---------------------------|-------------------------------|----------------|
+| 100      | 1,768 ± 0,360             | 1,505 ± 0,140                 | ~1,17x         |
+| 1000     | 20,620 ± 1,656            | 14,014 ± 0,273                | ~1,47x         |
+| 10 000   | 312,758 ± 58,560          | 148,900 ± 3,901               | ~2,10x         |
+| 100 000  | 7274,169 ± 1086,437       | 2318,541 ± 919,592            | ~3,14x         |
+
+###### Observations
+- **put** : `IntIntHashMap` est **2,83 à 4,09x plus rapide**, avec un gain croissant à grande échelle (~4,09x à 100 000).
+- **get** : `IntIntHashMap` est **1,17 à 3,14x plus rapide**, avec un avantage marqué à 100 000 éléments (~3,14x).
