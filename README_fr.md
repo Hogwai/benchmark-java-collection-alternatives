@@ -18,10 +18,12 @@
     - [HashSet vs Eclipse IntHashSet](#hashset-vs-eclipse-inthashset)
     - [ArrayList vs Eclipse IntArrayList](#arraylist-vs-eclipse-intarraylist)
     - [HashMap vs MutableIntIntMap](#hashmap-vs-mutableintintmap)
+  - [HPPC](#hppc)
+    - [HashMap vs IntIntMap](#hashmap-vs-intintmap)
 
 ---
 ## Description
-Ce dépôt contient des benchmarks JMH (Java Microbenchmark Harness) comparant les performances des collections standards de java.util avec leurs équivalents optimisés ([fastutil](https://github.com/vigna/fastutil), [agrona](https://github.com/aeron-io/agrona), [eclipse-collections](https://github.com/eclipse-collections/eclipse-collections)).
+Ce dépôt contient des benchmarks JMH (Java Microbenchmark Harness) comparant les performances des collections standards de java.util avec leurs équivalents optimisés ([fastutil](https://github.com/vigna/fastutil), [agrona](https://github.com/aeron-io/agrona), [eclipse-collections](https://github.com/eclipse-collections/eclipse-collections), [HPPC](https://github.com/carrotsearch/hppc)).
 
 ## Prérequis
 - Java 21
@@ -232,3 +234,28 @@ Les tableaux ci-dessous présentent les résultats du benchmark comparant `java.
 ##### Observations
 - **put** : `IntIntHashMap` est **2,83 à 4,09x plus rapide**, avec un gain croissant à grande échelle (~4,09x à 100 000).
 - **get** : `IntIntHashMap` est **1,17 à 3,14x plus rapide**, avec un avantage marqué à 100 000 éléments (~3,14x).
+
+
+### HPPC
+#### HashMap vs IntIntMap
+Les tableaux ci-dessous présentent les résultats du benchmark comparant `java.util.HashMap<Integer, Integer>` et `com.carrotsearch.hppc.IntIntMap` pour les opérations `put` et `get`.
+
+##### Opération `put`
+| Taille   | java.util.HashMap (µs/op) | HPPC IntIntMap (µs/op) | Gain (rapport) |
+|----------|---------------------------|-------------------------|----------------|
+| 100      | 1,638 ± 0,055             | 0,446 ± 0,021           | ~3,67x         |
+| 1000     | 19,249 ± 3,597            | 4,283 ± 0,188           | ~4,49x         |
+| 10 000   | 165,626 ± 5,211           | 81,990 ± 6,833          | ~2,02x         |
+| 100 000  | 2434,032 ± 150,374        | 1129,027 ± 193,418      | ~2,16x         |
+
+##### Opération `get`
+| Taille   | java.util.HashMap (µs/op) | HPPC IntIntMap (µs/op) | Gain (rapport) |
+|----------|---------------------------|-------------------------|----------------|
+| 100      | 1,485 ± 0,086             | 2,142 ± 0,206           | ~0,69x         |
+| 1000     | 18,945 ± 1,188            | 19,654 ± 1,181          | ~0,96x         |
+| 10 000   | 261,256 ± 19,658          | 243,807 ± 48,121        | ~1,07x         |
+| 100 000  | 6408,282 ± 1846,067       | 2939,504 ± 589,022      | ~2,18x         |
+
+##### Observations
+- **put** : `IntIntMap` est **2,02 à 4,49x plus rapide**, avec un gain maximal à 1000 éléments (~4,49x) mais plus modéré à grande échelle (~2,16x).
+- **get** : Résultats mitigés ; `HashMap` est plus rapide à petite échelle (~1,45x à 100 éléments), mais `IntIntMap` prend l'avantage à 100 000 (~2,18x).
