@@ -286,7 +286,7 @@ The tables below present the benchmark results comparing `java.util.HashMap<Inte
 
 The tables below present the results of the benchmark comparing `java.util.HashMap<Integer, Integer>` and `com.carrotsearch.hppc.IntIntMap` for the `put` and `get` operations.
 
-## Operation `put`
+##### Operation `put`
 
 | Size     | java.util.HashMap (µs/op) | HPPC IntIntMap (µs/op) | Gain (ratio) |
 |----------|---------------------------|-------------------------|--------------|
@@ -295,7 +295,7 @@ The tables below present the results of the benchmark comparing `java.util.HashM
 | 10,000   | 165.626 ± 5.211           | 81.990 ± 6.833          | ~2.02x       |
 | 100,000  | 2434.032 ± 150.374        | 1129.027 ± 193.418      | ~2.16x       |
 
-## Operation `get`
+##### Operation `get`
 
 | Size     | java.util.HashMap (µs/op) | HPPC IntIntMap (µs/op) | Gain (ratio) |
 |----------|---------------------------|-------------------------|--------------|
@@ -304,7 +304,7 @@ The tables below present the results of the benchmark comparing `java.util.HashM
 | 10,000   | 261.256 ± 19.658          | 243.807 ± 48.121        | ~1.07x       |
 | 100,000  | 6408.282 ± 1846.067       | 2939.504 ± 589.022      | ~2.18x       |
 
-### Observations
+##### Observations
 
 - **put**: `IntIntMap` is **2.02x to 4.49x faster**, with the highest gain at 1,000 elements (~4.49x) but more moderate at larger sizes (~2.16x at 100,000).
 - **get**: Results are mixed; `HashMap` is faster at small sizes (~1.45x at 100 elements), but `IntIntMap` takes the lead at 100,000 (~2.18x).
